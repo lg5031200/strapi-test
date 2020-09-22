@@ -50,33 +50,35 @@ export default {
     return {
       username: "",
       email: "",
-      password: "",
+      password: ""
     };
   },
   methods: {
     async login() {
       const input = {
         identifier: this.email,
-        password: this.password,
+        password: this.password
       };
       const result = await this.$apollo
         .mutate({
           mutation: LOGIN,
           variables: {
-            input,
-          },
+            input
+          }
         })
-        .then((response) => {
-          console.log(response)
+        .then(response => {
           if (response.data.login) {
             onLogin(
               this.$apollo.provider.defaultClient,
-              response.data.login.jwt,
+              response.data.login.jwt
             );
-            this.$router.push({ path: "/me", query: { id: response.data.login.id } });
+            this.$router.push({
+              path: "/me",
+              query: { id: response.data.login.id }
+            });
           }
         });
-    },
-  },
+    }
+  }
 };
 </script>

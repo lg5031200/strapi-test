@@ -5,6 +5,7 @@
         <h2 class="title">User Details</h2>
         <p>User: {{ user.username }}</p>
         <p>Email: {{ user.email }}</p>
+        <button @click="logout()">Logout</button>
       </div>
     </div>
   </section>
@@ -12,6 +13,7 @@
 
 <script>
 import { ME } from "@/constants/query";
+import { LOGOUT } from "@/constants/mutate";
 
 export default {
   name: "Me",
@@ -20,7 +22,11 @@ export default {
       user: null,
     };
   },
-  methods: {},
+  methods: {
+    async logout() {
+
+    }
+  },
   apollo: {
     me: {
       query: ME,

@@ -12,15 +12,18 @@
     "name": {
       "type": "string",
       "required": true,
-      "unique": true
+      "unique": false
     },
     "price": {
       "type": "string",
       "required": true,
-      "unique": true
+      "unique": false
     },
     "category": {
       "model": "category"
+    },
+    "restaurant": {
+      "model": "restaurant"
     }
   }
 }

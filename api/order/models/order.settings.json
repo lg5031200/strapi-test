@@ -10,12 +10,20 @@
   },
   "attributes": {
     "restaurant": {
-      "model": "restaurant",
-      "via": "order"
+      "model": "restaurant"
     },
     "drinks": {
       "via": "order",
       "collection": "drink"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "init",
+        "prepare",
+        "delivering",
+        "done"
+      ]
     }
   }
 }

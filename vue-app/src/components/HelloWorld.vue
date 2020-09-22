@@ -87,20 +87,10 @@
 </template>
 
 <script>
-import { RESTAURANTS } from "../constants/query";
-
 export default {
   name: "HelloWorld",
   props: {
     msg: String
-  },
-  apollo: {
-    restaurants: {
-      query: RESTAURANTS,
-      result({ data }) {
-        console.log(data);
-      }
-    }
   }
 };
 </script>

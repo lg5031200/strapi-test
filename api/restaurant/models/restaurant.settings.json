@@ -20,10 +20,6 @@
     "categories": {
       "via": "restaurants",
       "collection": "category"
-    },
-    "order": {
-      "via": "restaurant",
-      "model": "order"
     }
   }
 }

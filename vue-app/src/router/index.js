@@ -1,45 +1,40 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from '../components/Login.vue'
-import Me from '../components/Me.vue'
-import CreateOrder from '../components/CreateOrder.vue'
-import Order from '../views/Order'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home";
+import Me from "../views/Me";
+import CreateOrder from "../views/CreateOrder";
+import Order from "../views/Order";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: "/home",
+    name: "Home",
     component: Home
   },
   {
-    path: '/order',
-    name: 'Order',
+    path: "/order",
+    name: "Order",
     component: Order
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/me',
-    name: 'Me',
+    path: "/me",
+    name: "Me",
     component: Me
   },
   {
-    path: '/add',
-    name: 'Add',
+    path: "/add",
+    name: "Add",
     component: CreateOrder
   },
-]
+  { path: '*', redirect: '/home' }
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes
-})
+});
 
-export default router
+export default router;

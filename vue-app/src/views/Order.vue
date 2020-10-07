@@ -1,31 +1,51 @@
 <template>
-  <div class="order">
-    <div v-if="orders && orders.length === 0">目前尚無訂單</div>
-    <div v-for="order in orders" :key="order.id">
-      <div class="drink">
-        <h3>飲料店：{{ order.restaurant.name }}</h3>
+  <v-container class="d-flex flex-wrap">
+    <v-card
+      v-if="me && orders.length !== 0 && order.drinks.length !== 0"
+      v-for="order in orders"
+      :key="order.id"
+      class="mx-3 my-3"
+      width="300"
+      :class="{ 'done-job': order.status === 'done' }"
+    >
+      <v-card-title>{{ order.restaurant.name }}</v-card-title>
+
+      <v-card-text>
         <div v-for="drink in order.drinks" :key="drink.id">
           <p>品名：{{ drink.product.name }}</p>
           <p>價格：{{ drink.product.price }} 元</p>
-          <p>甜度：{{ drink.suger }} 分糖</p>
+          <p>甜度：{{ drink.suger }}</p>
           <p>冰塊：{{ drink.ice }}</p>
           <p>數量：{{ drink.quantity }} 杯</p>
+          <p>顧客：{{ order.user.username }} </p>
         </div>
-        <b v-if="user.role.type === 'authenticated'" style="color: red"
-          >狀態：
-          <select v-model="order.status" @change="updateOrder(order)">
-            <option
-              :value="statusObj.value"
-              v-for="statusObj in statusTypes"
-              :key="statusObj.value"
-              >{{ statusObj.name }}</option
-            >
-          </select></b
+        <v-select
+          v-model="order.status"
+          v-if="me.role.type === 'authenticated'"
+          @change="updateOrder(order)"
+          :items="statusTypes"
+          dense
+          outlined
+          label="狀態"
+          item-value="value"
+          item-text="name"
         >
-        <b v-if="user.role.type === 'public'" style="color: red">狀態：{{ status[order.status] }}</b>
-      </div>
+        </v-select>
+        <div v-else>
+          <p>
+            狀態：{{ statusObject[order.status][0] }}
+            <v-icon color="indigo">{{ statusObject[order.status][1] }}</v-icon>
+          </p>
+        </div>
+      </v-card-text>
+    </v-card>
+    <div v-else>
+      目前尚無訂單
     </div>
-  </div>
+    <div v-if="!me">
+      您沒有檢視訂單的權限，請先登入！
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -39,19 +59,19 @@ export default {
   },
   data() {
     return {
-      status: {
-        'init': '訂單接收中',
-        'prepare': '訂單準備中',
-        'delivering': '外送中',
-        'done': '訂單已完成'
+      statusObject: {
+        init: ["接收中", "mdi-head-question"],
+        prepare: ["準備中", "mdi-handball"],
+        delivering: ["外送中", "mdi-motorbike"],
+        done: ["已送達", "mdi-hand-okay"]
       },
       statusTypes: [
         {
-          name: "訂單接收中",
+          name: "接收中",
           value: "init"
         },
         {
-          name: "訂單準備中",
+          name: "準備中",
           value: "prepare"
         },
         {
@@ -59,12 +79,21 @@ export default {
           value: "delivering"
         },
         {
-          name: "訂單已完成",
+          name: "已送達",
           value: "done"
         }
-      ],
-      user: null
+      ]
     };
+  },
+  watch: {
+    $route(data) {
+      if (data.name === "Order") {
+        this.$apollo.queries.orders.refetch();
+      }
+    },
+    me(data) {
+      this.$apollo.queries.orders.refetch();
+    }
   },
   methods: {
     async updateOrder(order) {
@@ -87,26 +116,41 @@ export default {
   apollo: {
     orders: {
       query: ORDERS,
-      fetchPolicy: "network-only"
+      fetchPolicy: "network-only",
+      variables() {
+        const params = {
+          where: {
+            user: {
+              id: this.me ? this.me.id : null
+            },
+            status_ne: 'done'
+          },
+          sort: "restaurant"
+        };
+        if (this.me && this.me.role.type === "authenticated") {
+          delete params.where;
+        }
+        return params;
+      },
+      skip() {
+        return !localStorage.getItem("apollo-token");
+      }
     },
     me: {
       query: ME,
       skip() {
-        return !localStorage.getItem("apollo-token") && !this.$route.query.id;
+        return !localStorage.getItem("apollo-token");
       },
       result({ data }) {
-        this.user = data.me;
+        return data.me;
       }
     }
   }
 };
 </script>
 
-<style scoped>
-.drink {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 300px;
-  text-align: left;
+<style lang="scss">
+.done-job {
+  background-color: #ECEFF1 !important;
 }
 </style>

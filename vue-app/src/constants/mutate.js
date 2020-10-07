@@ -5,17 +5,30 @@ export const LOGIN = gql`
     login(input: $input) {
       jwt
       user {
+        id
         username
       }
     }
   }
 `;
 
-// export const LOGOUT = gql`
-//   mutation logout {
-//     logout
-//   }
-// `;
+export const SIGNUP = gql`
+  mutation register($input: UsersPermissionsRegisterInput!) {
+    register(input: $input) {
+      jwt
+      user {
+        id
+        username
+        email
+        role {
+          id
+          type
+          name
+        }
+      }
+    }
+  }
+`;
 
 export const CREATE_ORDER = gql`
   mutation createOrder($input: createOrderInput) {

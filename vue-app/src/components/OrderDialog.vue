@@ -1,23 +1,47 @@
 <template>
-  <dialog :open="dialog">
-    選擇餐廳：
-    <select v-model="restaurantId">
-      <option :value="res.id" v-for="res in restaurants" :key="res.id">{{
-        res.name
-      }}</option>
-    </select>
-    <br />
-    <button style="margin-top: 20px" @click="createOrder" :disabled="!restaurantId">送出</button>
-  </dialog>
+  <v-dialog v-model="dialog" max-width="480px" max-height="640px" persistent>
+    <v-card>
+      <v-toolbar color="indigo" dark>
+        <v-toolbar-title>新增訂單</v-toolbar-title>
+      </v-toolbar>
+      <v-form ref="form" @submit.prevent="submit">
+        <v-card-text>
+          <v-select
+            :items="restaurants"
+            label="選擇飲料店"
+            v-model="restaurantId"
+            item-value="id"
+            item-text="name"
+            outlined
+          ></v-select>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="indigo"
+            dark
+            @click="
+              () => {
+                $emit('close-dialog', false);
+                restaurantId = null;
+              }
+            "
+            >取消</v-btn
+          >
+          <v-btn @click="createOrder" :disabled="!restaurantId">送出</v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-import { RESTAURANTS } from "@/constants/query";
+import { RESTAURANTS, ME } from "@/constants/query";
 import { CREATE_ORDER } from "@/constants/mutate";
 
 export default {
   name: "OrderDialog",
-  props: ["dialog"],
+  props: ["dialog", "userData", "me"],
   data() {
     return {
       status: "init",
@@ -26,12 +50,19 @@ export default {
   },
   methods: {
     async createOrder() {
+      console.log(this.userData)
       const input = {
         data: {
           status: this.status,
-          restaurant: this.restaurantId
+          restaurant: this.restaurantId,
+          user: this.me
+            ? this.me.id
+            : this.userData
+            ? this.userData.loginData.user.id
+            : null
         }
       };
+      console.log(input);
       const result = await this.$apollo
         .mutate({
           mutation: CREATE_ORDER,
@@ -40,7 +71,6 @@ export default {
           }
         })
         .then(response => {
-          localStorage.setItem("order-id", response.data.createOrder.order.id);
           this.$emit("close-dialog", response.data.createOrder.order);
         });
     }

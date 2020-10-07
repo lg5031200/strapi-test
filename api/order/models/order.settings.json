@@ -9,12 +9,9 @@
     "timestamps": true
   },
   "attributes": {
-    "restaurant": {
-      "model": "restaurant"
-    },
     "drinks": {
-      "via": "order",
-      "collection": "drink"
+      "collection": "drink",
+      "via": "order"
     },
     "status": {
       "type": "enumeration",
@@ -24,6 +21,13 @@
         "delivering",
         "done"
       ]
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "restaurant": {
+      "model": "restaurant"
     }
   }
 }

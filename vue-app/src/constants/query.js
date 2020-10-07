@@ -68,15 +68,21 @@ export const DRINKS = gql`
 `;
 
 export const ORDERS = gql`
-  query {
-    orders {
+  query orders($where: JSON, $sort: String){
+    orders(where: $where, sort: $sort) {
       id
       status
+      user {
+        id
+        username
+      }
       restaurant {
+        id
         name
       }
       drinks {
         product {
+          id
           name
           price
         }
@@ -93,17 +99,24 @@ export const ORDER = gql`
     order(id: $id) {
       id
       status
+      user {
+        id
+        username
+      }
       restaurant {
+        id
         name
       }
       drinks {
-        product {
-          name
-          price
-        }
+        id
         suger
         ice
         quantity
+        product {
+          id
+          name
+          price
+        }
       }
     }
   }

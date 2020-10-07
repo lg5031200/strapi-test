@@ -10,15 +10,8 @@
   },
   "attributes": {
     "order": {
-      "model": "order",
-      "via": "drinks"
-    },
-    "suger": {
-      "required": true,
-      "unique": false,
-      "type": "integer",
-      "max": 10,
-      "min": 0
+      "via": "drinks",
+      "model": "order"
     },
     "quantity": {
       "type": "integer",
@@ -30,6 +23,10 @@
       "model": "product"
     },
     "ice": {
+      "type": "string",
+      "required": true
+    },
+    "suger": {
       "type": "string",
       "required": true
     }

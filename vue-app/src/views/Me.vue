@@ -5,7 +5,6 @@
         <h2 class="title">User Details</h2>
         <p>User: {{ user.username }}</p>
         <p>Email: {{ user.email }}</p>
-        <button @click="logout()">Logout</button>
       </div>
     </div>
   </section>
@@ -13,19 +12,13 @@
 
 <script>
 import { ME } from "@/constants/query";
-import { LOGOUT } from "@/constants/mutate";
 
 export default {
   name: "Me",
   data() {
     return {
-      user: null,
+      user: null
     };
-  },
-  methods: {
-    async logout() {
-
-    }
   },
   apollo: {
     me: {
@@ -35,11 +28,11 @@ export default {
       },
       result({ data }) {
         this.user = data.me;
-        if (!this.$route.query.id && data.me) {
-          this.$router.push({ path: "me", query: { id: data.me.id } });
-        }
-      },
-    },
-  },
+        // if (!this.$route.query.id && data.me) {
+        //   this.$router.push({ path: "me", query: { userId: data.me.id } });
+        // }
+      }
+    }
+  }
 };
 </script>
